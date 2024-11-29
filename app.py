@@ -38,7 +38,13 @@ def predict():
             blood_pressure = data['bloodPressure']
 
         # Check if all required fields are present
-        required_fields = ['name', 'gender', 'age', 'occupation', 'bloodPressure', 'sleepDuration', 'weight', 'height']
+        required_fields = [
+            'name', 'gender', 'age', 'occupation', 'bloodPressure', 
+            'sleepDuration', 'weight', 'height', 'bmiCategory', 
+            'physicalActivityLevel', 'dailySteps', 'heartRate', 
+            'qualityOfSleep', 'stressLevel'
+        ]
+        
         if not all(key in data for key in required_fields):
             return jsonify({'success': False, 'error': 'Missing required data fields'})
 
@@ -46,22 +52,28 @@ def predict():
         try:
             gender_encoded = label_encoders['Gender'].transform([data['gender']])[0]
             occupation_encoded = label_encoders['Occupation'].transform([data['occupation']])[0]
+            bmi_category_encoded = label_encoders['BMI Category'].transform([data['bmiCategory']])[0]
+            physical_activity_level_encoded = label_encoders['Physical Activity Level'].transform([data['physicalActivityLevel']])[0]
+            quality_of_sleep_encoded = label_encoders['Quality of Sleep'].transform([data['qualityOfSleep']])[0]
         except KeyError as e:
             return jsonify({'success': False, 'error': f'Error encoding categorical data: {str(e)}'})
 
         # Prepare the input features for the model
         input_features = np.array([
-            data['age'], gender_encoded, occupation_encoded,
-            blood_pressure, data['sleepDuration'], data['weight'], data['height']
+            data['age'], gender_encoded, occupation_encoded, bmi_category_encoded, 
+            physical_activity_level_encoded, data['dailySteps'], data['sleepDuration'], 
+            data['heartRate'], quality_of_sleep_encoded, data['stressLevel'], 
+            blood_pressure, data['weight'], data['height']
         ], dtype=float).reshape(1, -1)
 
         # Scale numerical features
-        input_features[:, [0, 3, 4, 5, 6]] = scaler.transform(input_features[:, [0, 3, 4, 5, 6]])
+        input_features[:, [0, 5, 6, 7, 10, 11]] = scaler.transform(input_features[:, [0, 5, 6, 7, 10, 11]])
+        print(input_features)
 
         # Make prediction
         prediction = model.predict(input_features)
         prediction_label = label_encoders['Sleep Disorder'].inverse_transform(prediction)[0]
-
+        
         return jsonify({'success': True, 'prediction': prediction_label})
 
     except Exception as e:
