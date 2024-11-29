@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Predictor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Interactive Health Predictor</h1>
+    <form id="predictionForm">
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" id="name" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="gender">Gender:</label>
+            <select id="gender" required>
+                <option value="">Select Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="age">Age:</label>
+            <input type="number" id="age" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="occupation">Occupation:</label>
+            <select id="occupation" required>
+                <option value="">Select Occupation</option>
+                <option value="Doctor">Doctor</option>
+                <option value="Engineer">Engineer</option>
+                <option value="Sales">Sales</option>
+                <option value="Teacher">Teacher</option>
+                <option value="Manager">Manager</option>
+                <option value="Nurse">Nurse</option>
+                <option value="Software Engineer">Software Engineer</option>
+                <option value="Accountant">Accountant</option>
+                <option value="Scientist">Scientist</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="bloodPressure">Blood Pressure:</label>
+            <input type="text" id="bloodPressure" placeholder="e.g., 120/80" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="sleepDuration">Sleep Duration (hours):</label>
+            <input type="number" id="sleepDuration" step="0.1" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="weight">Weight (kg):</label>
+            <input type="number" id="weight" step="0.1" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="height">Height (cm):</label>
+            <input type="number" id="height" required>
+        </div>
+        
+        <button type="submit">Predict</button>
+    </form>
+    
+    <div id="results" style="margin-top: 20px;">
+        <h2>Prediction Result:</h2>
+        <p id="predictionText">No prediction yet.</p>
+    </div>
+
+    <script>
+        document.getElementById('predictionForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const data = {
+                name: document.getElementById('name').value,
+                gender: document.getElementById('gender').value,
+                age: parseFloat(document.getElementById('age').value),
+                occupation: document.getElementById('occupation').value,
+                bloodPressure: document.getElementById('bloodPressure').value,
+                sleepDuration: parseFloat(document.getElementById('sleepDuration').value),
+                weight: parseFloat(document.getElementById('weight').value),
+                height: parseFloat(document.getElementById('height').value)
+            };
+
+            try {
+                const response = await fetch('http://127.0.0.1:5000/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    document.getElementById('predictionText').textContent = `Prediction: ${result.prediction}`;
+                } else {
+                    document.getElementById('predictionText').textContent = `Error: ${result.error}`;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('predictionText').textContent = 'An error occurred during prediction.';
+            }
+        });
+    </script>
+</body>
+</html>
