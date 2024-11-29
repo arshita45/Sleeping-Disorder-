@@ -71,10 +71,41 @@
                 <option value="Scientist">Scientist</option>
             </select>
         </div>
+
+        <div class="form-group">
+            <label for="systolic">Systolic Blood Pressure:</label>
+            <input type="number" id="systolic" required>
+        </div>
         
         <div class="form-group">
-            <label for="bloodPressure">Blood Pressure:</label>
-            <input type="text" id="bloodPressure" placeholder="e.g., 120/80" required>
+            <label for="diastolic">Diastolic Blood Pressure:</label>
+            <input type="number" id="diastolic" required>
+        </div>
+
+        <div class="form-group">
+            <label for="bmiCategory">BMI Category:</label>
+            <select id="bmiCategory" required>
+                <option value="">Select BMI Category</option>
+                <option value="Underweight">Underweight</option>
+                <option value="Normal">Normal</option>
+                <option value="Overweight">Overweight</option>
+                <option value="Obese">Obese</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="physicalActivityLevel">Physical Activity Level:</label>
+            <select id="physicalActivityLevel" required>
+                <option value="">Select Activity Level</option>
+                <option value="Low">Low</option>
+                <option value="Moderate">Moderate</option>
+                <option value="High">High</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="dailySteps">Daily Steps:</label>
+            <input type="number" id="dailySteps" required>
         </div>
         
         <div class="form-group">
@@ -83,15 +114,30 @@
         </div>
         
         <div class="form-group">
-            <label for="weight">Weight (kg):</label>
-            <input type="number" id="weight" step="0.1" required>
+            <label for="heartRate">Heart Rate (bpm):</label>
+            <input type="number" id="heartRate" required>
         </div>
         
         <div class="form-group">
-            <label for="height">Height (cm):</label>
-            <input type="number" id="height" required>
+            <label for="qualityOfSleep">Quality of Sleep:</label>
+            <select id="qualityOfSleep" required>
+                <option value="">Select Sleep Quality</option>
+                <option value="Poor">Poor</option>
+                <option value="Fair">Fair</option>
+                <option value="Good">Good</option>
+            </select>
         </div>
         
+        <div class="form-group">
+            <label for="stressLevel">Stress Level:</label>
+            <select id="stressLevel" required>
+                <option value="">Select Stress Level</option>
+                <option value="Low">Low</option>
+                <option value="Moderate">Moderate</option>
+                <option value="High">High</option>
+            </select>
+        </div>
+
         <button type="submit">Predict</button>
     </form>
     
@@ -109,14 +155,19 @@
                 gender: document.getElementById('gender').value,
                 age: parseFloat(document.getElementById('age').value),
                 occupation: document.getElementById('occupation').value,
-                bloodPressure: document.getElementById('bloodPressure').value,
+                systolic: parseFloat(document.getElementById('systolic').value),
+                diastolic: parseFloat(document.getElementById('diastolic').value),
+                bmiCategory: document.getElementById('bmiCategory').value,
+                physicalActivityLevel: document.getElementById('physicalActivityLevel').value,
+                dailySteps: parseFloat(document.getElementById('dailySteps').value),
                 sleepDuration: parseFloat(document.getElementById('sleepDuration').value),
-                weight: parseFloat(document.getElementById('weight').value),
-                height: parseFloat(document.getElementById('height').value)
+                heartRate: parseFloat(document.getElementById('heartRate').value),
+                qualityOfSleep: document.getElementById('qualityOfSleep').value,
+                stressLevel: document.getElementById('stressLevel').value
             };
 
             try {
-                const response = await fetch('http://127.0.0.1:5000/predict', {
+                const response = await fetch('http://127.0.0.1:5500/predict', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
